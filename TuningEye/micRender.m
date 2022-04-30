@@ -36,19 +36,19 @@ static OSStatus renderer(void *inRef,
                          UInt32 inNumberFrames,
                          AudioBufferList *ioData){
     
-    micRender *bridgedMicRenter = (__bridge micRender *)inRef;
+    micRender *bridgedMicRender = (__bridge micRender *)inRef;
     
-    AudioUnitRender(bridgedMicRenter->_remoteIOUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
+    AudioUnitRender(bridgedMicRender->_remoteIOUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
     
     //Buffering
-    for (int i = 0; i<=bridgedMicRenter->_channels; i++) {
+    for (int i = 0; i<bridgedMicRender->_channels; i++) {
         Float32 *input = (Float32 *)ioData->mBuffers[i].mData;
 
         //Set input data to self.buffer, and set new index for next data.
-        memcpy(bridgedMicRenter->_buffer + bridgedMicRenter.currentInputIndex, input, inNumberFrames * sizeof(float));
-        bridgedMicRenter.currentInputIndex += inNumberFrames;
-        if(bridgedMicRenter.currentInputIndex > bridgedMicRenter->bufferLength){
-            bridgedMicRenter.currentInputIndex = 0;
+        memcpy(bridgedMicRender->_buffer + bridgedMicRender.currentInputIndex, input, inNumberFrames * sizeof(float));
+        bridgedMicRender.currentInputIndex += inNumberFrames;
+        if(bridgedMicRender.currentInputIndex > bridgedMicRender->bufferLength){
+            bridgedMicRender.currentInputIndex = 0;
         }
         
         //Reset memory for output to zero.
